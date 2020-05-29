@@ -1,0 +1,9 @@
+php_value auto_prepend_file /var/www/api.aftaa.ru.local/auto_prepend_file.php
+php_value auto_append_file /var/www/api.aftaa.ru.local/auto_append_file.php
+
+Options -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (^.*$) /$1.php
