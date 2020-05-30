@@ -9,7 +9,7 @@ return (object)[
             PDO::ATTR_PERSISTENT => true,
         ],
     ],
-    'withoutAuth' => [
+    'withoutAuth' => (object)[
         'uri' => [
             'api/auth/login.php',
             'api/auth/logout.php',

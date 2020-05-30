@@ -5,6 +5,9 @@ require_once 'app/JsonThrowableResponse.php';
 
 use app\JsonResponse;
 use app\JsonThrowableResponse;
+use app\PdoRepository;
+use app\UriFileName;
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', true);
@@ -19,23 +22,15 @@ set_exception_handler(function (Throwable $e) {
     (new JsonThrowableResponse)->setException($e)->sent();
 });
 
-($pdo = new PDO('mysql:host=localhost;dbname=aftaa_ru', 'aftaa_ru', 'aftaa_ru', [
-    PDO::ATTR_PERSISTENT => true,
-]))->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$config = include('app/config.php');
 
-$filename = ltrim($_SERVER['REQUEST_URI'], '/') . '.php';
+$app = (object)[
+    'pdo' => (new PdoRepository($config->pdo))->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION),
+];
 
-if (!file_exists($filename) || is_dir($filename) || !is_readable($filename)) {
+$filename = new UriFileName;
 
-    (new JsonResponse)
-        ->setStatus(404)
-        ->setSuccess(false)
-        ->sent();
-}
-
-$;
-
-if (!in_array($filename, $withoutAuth['uri']) && !in_array($_SERVER['REMOTE_ADDR'], $withoutAuth['ip'])) {
+if (!in_array($filename, $withoutAuth->uri) && !in_array($_SERVER['REMOTE_ADDR'], $withoutAuth->ip)) {
     try {
         if (empty($_SESSION['token'])) {
             throw new Exception;
@@ -43,7 +38,7 @@ if (!in_array($filename, $withoutAuth['uri']) && !in_array($_SERVER['REMOTE_ADDR
 
         $token = $_SESSION['token'];
 
-        $stmt = $pdo->prepare('SELECT id FROM token WHERE token=:token AND die<NOW()');
+        $stmt = $app->pdo->prepare('SELECT id FROM token WHERE token=:token AND die<NOW()');
         $stmt->execute([
             'token' => $_SESSION['token'],
         ]);

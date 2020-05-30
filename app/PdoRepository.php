@@ -17,5 +17,4 @@ class PdoRepository extends PDO
             $config->options,
         );
     }
-
 }
