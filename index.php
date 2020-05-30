@@ -1,22 +1,13 @@
 <?php
 
-require_once 'app/JsonResponse.php';
-require_once 'app/JsonThrowableResponse.php';
-
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
 use app\UriFileName;
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', true);
 
-ob_start();
 
-set_error_handler(function ($severity, $message, $file, $line) {
-    throw new ErrorException($message, 0, $severity, $file, $line);
-});
 
 set_exception_handler(function (Throwable $e) {
     (new JsonThrowableResponse)->setException($e)->sent();
