@@ -15,7 +15,14 @@ class TokenAuthentication
     public function __construct(string $tokenName)
     {
         $this->tokenName = $tokenName;
-        $this->
+    }
+
+    /**
+     * @return bool
+     */
+    public function tokenExists(): bool
+    {
+        return array_key_exists($this->tokenName, $_SESSION);
     }
 
     /**

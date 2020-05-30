@@ -6,17 +6,17 @@ namespace app;
 
 use PDO;
 
-class PdoRepository extends PDO implements TokenPdoInterface
+class PdoRepository extends PDO implements TokenMethodsInterface
 {
     public object $config;
 
     public function __construct(object $config)
     {
         parent::__construct(
-            $config->pdo->dsn,
-            $config->pdo->username,
-            $config->pdo->passwd,
-            $config->pdo->options,
+            $config->dsn,
+            $config->username,
+            $config->passwd,
+            $config->options,
         );
     }
 
@@ -24,18 +24,21 @@ class PdoRepository extends PDO implements TokenPdoInterface
      * @param string $token
      * @return bool
      */
-    public function isAlive(string $token): bool
+    public function tokenIsAlive(string $token): bool
     {
-        $stmt = $this->prepare('SELECT id FROM token WHERE token=:token AND die > NOW()');
+        $stmt = $this->prepare('DELETE FROM token WHERE token=:token AND die <= NOW()');
         $stmt->execute([
             'token' => $_SESSION['token'],
         ]);
         return (bool)$stmt->columnCount();
     }
 
-    public function prolong(string $token)
+    /**
+     * @param string $token
+     */
+    public function prolongToken(string $token): void
     {
-        // TODO: Implement prolong() method.
+        $stmt = $this->prepare('UPDATE token SET die = die + :prolong WHERE token=:token');
     }
 
 }
