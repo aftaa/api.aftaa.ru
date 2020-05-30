@@ -33,6 +33,6 @@ while ($row = $rows->fetchObject()) {
     ];
 }
 
-echo [
+return [
     'columns' => $data,
 ];
