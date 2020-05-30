@@ -37,6 +37,4 @@ while ($row = $rows->fetchObject()) {
     ];
 }
 
-echo (object)[
-    'columns' => $data,
-];
+return $data;
