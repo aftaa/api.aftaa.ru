@@ -1,29 +1,22 @@
 <?php
 
-header('Content-Type: application/json');
+require_once 'app/JsonResponse.php';
+require_once 'app/JsonThrowableResponse.php';
+
+use app\JsonResponse;
+use app\JsonThrowableResponse;
 
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
 ob_start();
 
-set_exception_handler(function (Throwable $e) {
-    echo json_encode((object)[
-        'success'   => false,
-        'exception' => (object)[
-            'message' => $e->getMessage(),
-            'code'    => $e->getCode(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
-        ],
-        'output'    => ob_get_clean(),
-        'status'    => 500,
-    ]);
-    exit(1);
-});
-
 set_error_handler(function ($severity, $message, $file, $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(function (Throwable $e) {
+    (new JsonThrowableResponse)->setException($e)->sent();
 });
 
 ($pdo = new PDO('mysql:host=localhost;dbname=aftaa_ru', 'aftaa_ru', 'aftaa_ru', [
@@ -33,22 +26,28 @@ set_error_handler(function ($severity, $message, $file, $line) {
 $filename = ltrim($_SERVER['REQUEST_URI'], '/') . '.php';
 
 if (!file_exists($filename) || is_dir($filename) || !is_readable($filename)) {
-    header('HTTP/1.0 404 Not Found');
-    echo json_encode((object)[
-        'success' => false,
-        'output'  => ob_get_clean(),
-        'status'  => 400,
-    ]);
-    exit(1);
+
+    (new JsonResponse)
+        ->setStatus(404)
+        ->setSuccess(false)
+        ->sent();
 }
 
 $withoutAuth = [
-    'auth/login',
-    'auth/logout',
-    'data/data-index',
+    'uri' => [
+        'api/auth/login.php',
+        'api/auth/logout.php',
+        'api/data/index-data.php',
+    ],
+    'ip'  => [
+        '128.0.142.30',
+        '192.168.1.21',
+        '172.16.1.2,',
+        '127.0.0.1',
+    ],
 ];
 
-if (!in_array($filename, $withoutAuth)) {
+if (!in_array($filename, $withoutAuth['uri']) && !in_array($_SERVER['REMOTE_ADDR'], $withoutAuth['ip'])) {
     try {
         if (empty($_SESSION['token'])) {
             throw new Exception;
@@ -63,24 +62,23 @@ if (!in_array($filename, $withoutAuth)) {
         if (!$stmt->columnCount()) {
             throw new Exception;
         } else {
-            $pdo->prep('UPDATE ');
+            $pdo
+                ->prepare('UPDATE token SET die=NOW()+604800 WHERE token=:token')
+                ->execute([
+                    'token' => $token,
+                ]);
         }
     } catch (Exception $e) {
-        header('401 Unauthorized');
-        echo json_encode((object)[
-            'success' => false,
-            'output'  => ob_get_clean(),
-            'status'  => 401,
-        ]);
-        exit(1);
+        (new JsonResponse)
+            ->setSuccess(false)
+            ->setStatus(401)
+            ->sent();
+
     }
 }
 
-header('200 OK');
-
-echo json_encode((object)[
-    'success'  => true,
-    'response' => include($filename),
-    'output'   => ob_get_clean(),
-    'status'   => 200,
-]);
+(new JsonResponse)
+    ->setStatus(200)
+    ->setSuccess(true)
+    ->setResponse(include $filename)
+    ->sent();
