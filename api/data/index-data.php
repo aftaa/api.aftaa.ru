@@ -6,7 +6,7 @@
         . 'WHERE b.deleted = FALSE AND l.deleted = FALSE '
         . 'AND l.private = FALSE AND b.private = FALSE '
         . 'ORDER BY b.sort, l.name';
-    $rows = $pdo->query($sql);
+    $rows = $app->pullpdo->query($sql);
 
     $data = [];
     while ($row = $rows->fetchObject()) {
