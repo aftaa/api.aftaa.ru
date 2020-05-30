@@ -1,7 +1,7 @@
 <?php
 
 return (object)[
-    'token_name' => '_44f635f24e1bf9ee80e51287aad0a368',
+    'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
 
     'pdo' => (object)[
         'dsn'      => 'mysql:host=localhost;dbname=aftaa_ru',

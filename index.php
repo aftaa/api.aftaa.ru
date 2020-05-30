@@ -1,27 +1,40 @@
 <?php
 
+// некоторые стартовые магические действия творятся
+// в автоматически присоединямом файле auto_prepend_file.php
+
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
+use app\TokenAuthentication;
 use app\UriFileName;
 
-
-
-
-
+// все необработанные исключения будут обработаны JsonThrowableResponse
 set_exception_handler(function (Throwable $e) {
     (new JsonThrowableResponse)->setException($e)->sent();
 });
 
-$config = include('app/config.php');
-
+// внимание, это наше чудо-приложение! содержит конфиг!
 $app = (object)[
-    'pdo' => (new PdoRepository($config->pdo))->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION),
+    'config' => include('app/config.php'),
 ];
 
+// чудо приложение содержит репозиторий работы с данными, наследуемый от PDO
+// и к тому же выбрасывает исключение вместо return false (трижды ура!!!)
+$app->pdo = (new PdoRepository($app->config))
+    ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// каждый микросервис - это PHP-файл каталога /api/
+// самоициниализируется и немножко проверяется на возможность поработать с ним
 $filename = new UriFileName;
 
-if (!in_array($filename, $withoutAuth->uri) && !in_array($_SERVER['REMOTE_ADDR'], $withoutAuth->ip)) {
+// аутентификация по токену, имя которого прошито в конфиге
+$tokenAuth = new TokenAuthentication($app->config->tokenName);
+
+// до проверки токена глянем, не гламурные ли урлы да айпишники
+// попались, которым и аутентификация и вовсе не нужна
+if (!$tokenAuth->uriDressCode($filename->filename, $app->config->withoutAuth->uri)
+    && !$tokenAuth->ipFaceControl($app->config->withoutAuth->ip)) {
     try {
         if (empty($_SESSION['token'])) {
             throw new Exception;
