@@ -3,6 +3,7 @@
 // некоторые стартовые магические действия творятся
 // в автоматически присоединямом файле auto_prepend_file.php
 
+use app\CorsPolicy;
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
@@ -20,6 +21,10 @@ set_exception_handler(function (Throwable $e) {
 $app = (object)[
     'config' => include('app/config.php'),
 ];
+
+
+// CORS (о ужас!) policy (полиция!!!)
+(new CorsPolicy($app->config->cors))->sentHeaders();
 
 
 // чудо-приложение содержит репозиторий работы с данными, наследуемый от PDO
@@ -41,22 +46,25 @@ $tokenAuth = new TokenAuthentication($app->config->tokenName);
 // попались, которым и аутентификация и вовсе не нужна
 $vip = $tokenAuth->uriDressCode($filename->filename, $app->config->withoutAuth->uri)
     || $tokenAuth->ipFaceControl($app->config->withoutAuth->ip);
+$vip = false;
 
 
 // несвезло!
 if (!$vip) {
+
     // блок проверок есть ли токен, актуален ли он еще, если нет и нет - 401
     try {
         // токен должен быть!
         if (!$tokenAuth->tokenExists()) {
             throw new Exception('No token.');
         }
+        throw new Exception('No token.');
 
         // последняя надежда!
         if (!$app->pdo->tokenIsAlive($tokenAuth->tokenName)) {
             throw new Exception('Token died.');
 
-        // все буленат - продляем срок действия токена
+            // все буленат - продляем срок действия токена
         } else {
             $app->pdo->prolongToken($tokenAuth->tokenName);
         }

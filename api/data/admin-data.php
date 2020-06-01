@@ -5,7 +5,8 @@ $sql = 'SELECT l.id AS link_id, b.id AS block_id, l.name AS link_name, b.name AS
     . 'FROM link l JOIN link_block b ON l.block_id=b.id '
     . 'WHERE b.deleted = FALSE AND l.deleted = FALSE '
     . 'ORDER BY b.sort, l.name';
-$rows = $pdo->query($sql);
+
+$rows = $app->pdo->query($sql);
 
 $data = [];
 while ($row = $rows->fetchObject()) {

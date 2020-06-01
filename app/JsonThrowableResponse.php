@@ -39,6 +39,6 @@ class JsonThrowableResponse extends JsonResponse
             'status'    => 500,
         ]);
 
-        exit(1);
+        die;
     }
 }

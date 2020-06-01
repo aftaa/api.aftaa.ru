@@ -26,4 +26,8 @@ return (object)[
             '127.0.0.1',
         ],
     ],
+
+    'cors' => [
+        'http://aftaa.ru.local',
+    ],
 ];

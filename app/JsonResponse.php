@@ -7,10 +7,10 @@ namespace app;
 class JsonResponse
 {
     const HTTP_CODES = [
-        200 => 'HTTP/1.0 OK',
-        401 => 'HTTP/1.0 Unauthorized',
-        404 => 'HTTP/1.0 Not Found',
-        500 => 'HTTP/1.0 Internal Server Error',
+        200 => '200 OK',
+        401 => '401 Unauthorized',
+        404 => '404 Not Found',
+        500 => '500 Internal Server Error',
     ];
 
     private bool $success;
@@ -42,7 +42,7 @@ class JsonResponse
             'status'   => $this->status,
         ]);
 
-        exit(200 != $this->status);
+        exit;
     }
 
     /**

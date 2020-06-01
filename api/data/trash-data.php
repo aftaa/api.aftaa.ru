@@ -7,7 +7,7 @@ $sql = 'SELECT l.id AS link_id, b.id AS block_id, l.name AS link_name, b.name AS
     . 'WHERE b.deleted = TRUE OR l.deleted = TRUE '
     . 'ORDER BY b.sort, l.name';
 
-$rows = $pdo->query($sql);
+$rows = $app->pdo->query($sql);
 
 $data = [];
 while ($row = $rows->fetchObject()) {
@@ -37,4 +37,6 @@ while ($row = $rows->fetchObject()) {
     ];
 }
 
-return $data;
+return [
+    'columns' => $data,
+];
