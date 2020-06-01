@@ -46,7 +46,10 @@ $tokenAuth = new TokenAuthentication($app->config->tokenName);
 // попались, которым и аутентификация и вовсе не нужна
 $vip = $tokenAuth->uriDressCode($filename->filename, $app->config->withoutAuth->uri)
     || $tokenAuth->ipFaceControl($app->config->withoutAuth->ip);
-$vip = false;
+
+
+// DEBUG
+if ($app->config->debug->vip)
 
 
 // несвезло!

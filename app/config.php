@@ -1,6 +1,10 @@
 <?php
 
 return (object)[
+    'debug' => (object)[
+        'vipReset' => true,
+    ],
+
     'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
 
     'pdo' => (object)[
