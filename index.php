@@ -3,6 +3,7 @@
 // некоторые стартовые магические действия творятся
 // в автоматически присоединямом файле auto_prepend_file.php
 
+use app\AuthenticationService;
 use app\CorsPolicy;
 use app\JsonResponse;
 use app\JsonThrowableResponse;
@@ -33,48 +34,15 @@ $app->pdo = new PdoRepository($app->config->pdo);
 $app->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-// каждый микросервис - это PHP-файл каталога /api/
-// самоинициализируется и немножко проверяет на возможность поработать с ним
-$filename = new UriFileName;
-
-
-// аутентификация по токену, имя которого прошито в конфиге
-$tokenAuth = new TokenAuthentication($app->config->tokenName);
-
-
-// до проверки токена глянем, не гламурные ли урлы да айпишники
-// попались, которым и аутентификация и вовсе не нужна
-$vip = $tokenAuth->uriDressCode($filename->filename, $app->config->withoutAuth->uri)
-    || $tokenAuth->ipFaceControl($app->config->withoutAuth->ip);
-
-
-// несвезло или свезло!
-if (!$vip || $app->config->debug->vipReset) {
-
-    // блок проверок есть ли токен, актуален ли он еще, если нет и нет - 401
-    try {
-        // токен должен быть!
-        if (!$tokenAuth->tokenExists()) {
-            throw new Exception('No token.');
-        }
-
-
-        // последняя надежда!
-        if (!$app->pdo->tokenIsAlive($tokenAuth->tokenName)) {
-            throw new Exception('Token died.');
-
-            // все буленат - продляем срок действия токена
-        } else {
-            $app->pdo->prolongToken($tokenAuth->tokenName);
-        }
-    } catch (Exception $e) {
-
-        // 401 - необходимо где-то там заполучить новый токен
-        (new JsonResponse)
-            ->setSuccess(false)
-            ->setStatus(401)
-            ->sent();
-    }
+// блок проверок есть ли токен, актуален ли он еще, если нет и нет - 401
+try {
+    (new AuthenticationService($app, $filename))->authentication();
+} catch (Exception $e) {
+    // 401 - необходимо где-то там заполучить новый токен
+    (new JsonResponse)
+        ->setSuccess(false)
+        ->setStatus(401)
+        ->sent();
 }
 
 // результаты работы микросервиса закодируем в JSON
