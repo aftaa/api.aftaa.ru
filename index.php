@@ -48,12 +48,8 @@ $vip = $tokenAuth->uriDressCode($filename->filename, $app->config->withoutAuth->
     || $tokenAuth->ipFaceControl($app->config->withoutAuth->ip);
 
 
-// DEBUG
-if ($app->config->debug->vip)
-
-
-// несвезло!
-if (!$vip) {
+// несвезло или свезло!
+if (!$vip || $app->config->debug->vipReset) {
 
     // блок проверок есть ли токен, актуален ли он еще, если нет и нет - 401
     try {
@@ -61,7 +57,7 @@ if (!$vip) {
         if (!$tokenAuth->tokenExists()) {
             throw new Exception('No token.');
         }
-        throw new Exception('No token.');
+
 
         // последняя надежда!
         if (!$app->pdo->tokenIsAlive($tokenAuth->tokenName)) {
