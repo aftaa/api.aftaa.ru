@@ -4,11 +4,10 @@
 // в автоматически присоединямом файле auto_prepend_file.php
 
 use app\AuthenticationService;
-use app\CorsPolicy;
+use app\Exception404;
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
-use app\TokenAuthentication;
 use app\UriFileName;
 
 
@@ -24,19 +23,35 @@ $app = (object)[
 ];
 
 
-// CORS (о ужас!) policy (полиция!!!)
-(new CorsPolicy($app->config->cors))->sentHeaders();
-
-
 // чудо-приложение содержит репозиторий работы с данными, наследуемый от PDO
 // и к тому же выбрасывает исключение вместо return false (трижды ура!!!)
 $app->pdo = new PdoRepository($app->config->pdo);
 $app->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
 // блок проверок есть ли токен, актуален ли он еще, если нет и нет - 401
 try {
-    (new AuthenticationService($app, $filename))->authentication();
+
+    $filename = new UriFileName;
+
+    (new AuthenticationService(
+        $app, $filename
+    ))->authenticate();
+
+    // результаты работы микросервиса закодируем в JSON
+    // и отправим откуда спрашивали
+    $response = include $filename->filename;
+    (new JsonResponse)
+        ->setStatus(200)
+        ->setSuccess(true)
+        ->setResponse($response)
+        ->sent();
+
+} catch (Exception404 $e) {
+    // 404 - ну тут все понятно
+    (new JsonResponse)
+        ->setStatus(404)
+        ->setSuccess(false)
+        ->sent();
 } catch (Exception $e) {
     // 401 - необходимо где-то там заполучить новый токен
     (new JsonResponse)
@@ -44,12 +59,3 @@ try {
         ->setStatus(401)
         ->sent();
 }
-
-// результаты работы микросервиса закодируем в JSON
-// и отправим откуда просили
-$response = include $filename->filename;
-(new JsonResponse)
-    ->setStatus(200)
-    ->setSuccess(true)
-    ->setResponse($response)
-    ->sent();

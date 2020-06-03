@@ -2,7 +2,9 @@
 
 return (object)[
     'debug' => (object)[
-        'vipReset' => true,
+        'vipAuth' => true,
+        'tokenAuth' => false,
+        'userAuth' => false,
     ],
 
     'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
@@ -16,7 +18,7 @@ return (object)[
         ],
     ],
 
-    'withoutAuth' => (object)[
+    'withoutAuth' => [
         'uri' => [
             'api/auth/login.php',
             'api/auth/logout.php',

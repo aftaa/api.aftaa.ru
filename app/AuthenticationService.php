@@ -3,11 +3,13 @@
 
 namespace app;
 
+use Exception;
+
 /**
  * Class AuthenticationService
  * @package app
  */
-class AuthenticationService implements AuthenticationServiceInterface
+class AuthenticationService
 {
     public object $app;
     public UriFileName $filename;
@@ -20,48 +22,39 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function __construct(object $app, UriFileName $filename)
     {
         $this->app = $app;
-        // каждый микросервис - это PHP-файл каталога /api/
-        // самоинициализируется и немножко проверяет на возможность поработать с ним
-        $this->filename = new UriFileName;
-
-
+        $this->filename = $filename;
     }
 
-    public function authentication(): void
+    /**
+     * @throws Exception
+     */
+    public function authenticate()
     {
-        $pseudoVip = $this->preAuthentication();
-        // несвезло или свезло!
-        if (!$pseudoVip || $this->config->debug->vipReset) {
-
-            $tokenAuth = new TokenAuthentication;
-
-            // токен должен быть!
-            if (!$tokenAuth->tokenExists()) {
-                throw new Exception('No token.');
-            }
-
-
-            // последняя надежда!
-            if (!$app->pdo->tokenIsAlive($tokenAuth->tokenName)) {
-                throw new Exception('Token died.');
-
-                // все буленат - продляем срок действия токена
-            } else {
-                $app->pdo->prolongToken($tokenAuth->tokenName);
-            }
+        // авторизация №1
+        if ($this->app->config->debug->vipAuth) { // TODO debug
+            (new VipAuthentication($this->app->config->withoutAuth, $this->filename->filename))
+                ->authenticate();
         }
+
+        // авторизация №2
+        if ($this->app->config->debug->tokenAuth) { // TODO debug
+            (new TokenAuthentication($this->app))
+                ->authenticate();
+        }
+
+        // авторизация №3
+        if ($this->app->config->debug->userAuth) { // TODO debug
+            (new UserAuthentication)
+                ->authenticate();
+        }
+
     }
 
-    public function preAuthentication(): bool
+    /**
+     *
+     */
+    public function prolongToken(): void
     {
-        // аутентификация по токену, имя которого прошито в конфиге
-        $preAuth = new PreAuthentication($this->app->confif->tokenName);
-
-        // до проверки токена глянем, не гламурные ли урлы да айпишники
-// попались, которым и аутентификация и вовсе не нужна
-        $pseudoVip = $preAuth->uriDressCode($filename->filename, $app->config->withoutAuth->uri)
-            || $preAuth->ipFaceControl($app->config->withoutAuth->ip);
-
-        return $pseudoVip;
+        $this->app->pdo->prolongToken($this->app->config->tokenName);
     }
 }
