@@ -6,21 +6,21 @@ namespace app;
 
 class CorsPolicy
 {
-    public array $sitesAvailable;
+    public array $allowedSites;
 
     /**
      * CorsPolicy constructor.
-     * @param array $sitesAvailable
+     * @param array $allowedSites
      */
-    public function __construct(array $sitesAvailable)
+    public function __construct(array $allowedSites)
     {
-        $this->sitesAvailable = $sitesAvailable;
+        $this->allowedSites = $allowedSites;
     }
 
     public function sentHeaders()
     {
         $header = 'Access-Control-Allow-Origin';
-        foreach ($this->sitesAvailable as $site) {
+        foreach ($this->allowedSites as $site) {
             header("$header: $site", false);
         }
     }
@@ -28,18 +28,18 @@ class CorsPolicy
     /**
      * @return array
      */
-    public function getSitesAvailable(): array
+    public function getAllowedSites(): array
     {
-        return $this->sitesAvailable;
+        return $this->allowedSites;
     }
 
     /**
-     * @param array $sitesAvailable
+     * @param array $allowedSites
      * @return CorsPolicy
      */
-    public function setSitesAvailable(array $sitesAvailable): CorsPolicy
+    public function setAllowedSites(array $allowedSites): CorsPolicy
     {
-        $this->sitesAvailable = $sitesAvailable;
+        $this->allowedSites = $allowedSites;
         return $this;
     }
 }

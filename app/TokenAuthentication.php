@@ -13,6 +13,7 @@ class TokenAuthentication
 {
     public object $app;
     public string $tokenName;
+    public PdoRepository $pdo;
 
     /**
      * TokenAuthentication constructor.
@@ -22,6 +23,7 @@ class TokenAuthentication
     {
         $this->app = $app;
         $this->tokenName = $this->app->config->tokenName;
+        $this->pdo = $this->app->pdo;
     }
 
     /**
@@ -32,22 +34,23 @@ class TokenAuthentication
         // аутентификация по токену, имя которого прошито в конфиге
 
         // токен должен быть!
-        if (!$this->tokenExists()) {
+        if (!$this->sessionTokenExists()) {
             throw new Exception('No token.');
         }
 
         // последняя надежда!
-        if (!$this->app->pdo->tokenIsAlive($this->tokenName)) {
+        if (!$this->pdo->tokenIsAlive($this->tokenName)) {
             throw new Exception('Token died.');
         }
 
         // все буленат! - продляем срок действия токена
+        $this->pdo->prolongToken($this->confif->tokenName);
     }
 
     /**
      * @return bool
      */
-    private function tokenExists(): bool
+    private function sessionTokenExists(): bool
     {
         return array_key_exists($this->tokenName, $_SESSION);
     }

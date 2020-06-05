@@ -1,24 +1,30 @@
 <?php
 
 return (object)[
+    'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
+
     'debug' => (object)[
         'vipAuth' => true,
         'tokenAuth' => false,
+        'useTestToken' => false,
+        'testToken' => '',
         'userAuth' => false,
     ],
 
-    'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
+    'allowedSites' => [
+        'http://aftaa.ru.local',
+    ],
 
     'pdo' => (object)[
         'dsn'      => 'mysql:host=localhost;dbname=aftaa_ru',
         'username' => 'aftaa_ru',
         'passwd'   => 'aftaa_ru',
         'options'  => [
-            PDO::ATTR_PERSISTENT => true,
+//            PDO::ATTR_PERSISTENT => true,
         ],
     ],
 
-    'withoutAuth' => [
+    'withoutAuth' => (object)[
         'uri' => [
             'api/auth/login.php',
             'api/auth/logout.php',
@@ -31,9 +37,5 @@ return (object)[
             '172.16.1.2,',
             '127.0.0.1',
         ],
-    ],
-
-    'cors' => [
-        'http://aftaa.ru.local',
     ],
 ];

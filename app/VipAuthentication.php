@@ -11,15 +11,15 @@ use Exception;
  */
 class VipAuthentication
 {
-    public array $withoutAuth;
+    public object $withoutAuth;
     public string $filename;
 
     /**
      * VipAuthentication constructor.
-     * @param array $withoutAuth
+     * @param object $withoutAuth
      * @param string $filename
      */
-    public function __construct(array $withoutAuth, string $filename)
+    public function __construct(object $withoutAuth, string $filename)
     {
         $this->withoutAuth = $withoutAuth;
         $this->filename = $filename;
@@ -45,8 +45,7 @@ class VipAuthentication
      */
     public function ipFaceControl(): bool
     {
-        echo "<pre>"; print_r(1); echo "</pre>"; die;
-        return in_array($_SERVER['REMOTE_ADDR'], $this->withoutAuth->ip);
+        return (bool)in_array($_SERVER['REMOTE_ADDR'], $this->withoutAuth->ip);
     }
 
     /**
@@ -54,7 +53,6 @@ class VipAuthentication
      */
     public function uriDressCode(): bool
     {
-        echo "<pre>"; print_r(2); echo "</pre>"; die;
-        return in_array($this->filename, $this->withoutAuth->uri);
+        return (bool)in_array($this->filename, $this->withoutAuth->uri);
     }
 }

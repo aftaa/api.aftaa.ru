@@ -23,12 +23,17 @@ class AuthenticationService
     {
         $this->app = $app;
         $this->filename = $filename;
+
+        // CORS policy
+        (new CorsPolicy($app->config->allowedSites))
+            ->sentHeaders();
     }
 
     /**
+     * @return bool
      * @throws Exception
      */
-    public function authenticate()
+    public function authenticate(): bool
     {
         // авторизация №1
         if ($this->app->config->debug->vipAuth) { // TODO debug
@@ -48,6 +53,7 @@ class AuthenticationService
                 ->authenticate();
         }
 
+        return true;
     }
 
     /**

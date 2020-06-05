@@ -33,13 +33,17 @@ try {
 
     $filename = new UriFileName;
 
-    (new AuthenticationService(
+    $authenticationService = new AuthenticationService(
         $app, $filename
-    ))->authenticate();
+    );
+
+    $authenticationService->authenticate();
+    $authenticationService->prolongToken();
 
     // результаты работы микросервиса закодируем в JSON
     // и отправим откуда спрашивали
     $response = include $filename->filename;
+
     (new JsonResponse)
         ->setStatus(200)
         ->setSuccess(true)
