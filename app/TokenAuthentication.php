@@ -42,9 +42,6 @@ class TokenAuthentication
         if (!$this->pdo->tokenIsAlive($this->tokenName)) {
             throw new Exception('Token died.');
         }
-
-        // все буленат! - продляем срок действия токена
-        $this->pdo->prolongToken($this->confif->tokenName);
     }
 
     /**

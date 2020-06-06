@@ -37,8 +37,9 @@ try {
         $app, $filename
     );
 
-    $authenticationService->authenticate();
-    $authenticationService->prolongToken();
+    if ($authenticationService->authenticate()) {
+        $authenticationService->prolongToken();
+    }
 
     // результаты работы микросервиса закодируем в JSON
     // и отправим откуда спрашивали
