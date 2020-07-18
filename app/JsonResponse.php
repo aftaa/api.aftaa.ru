@@ -33,7 +33,7 @@ class JsonResponse
      */
     public function send()
     {
-        $this->sentHeader();
+        $this->sendHeader();
 
         echo json_encode((object)[
             'success'  => $this->success,
@@ -76,9 +76,9 @@ class JsonResponse
     }
 
     /**
-     * Sent the header.
+     * Send the header.
      */
-    protected function sentHeader()
+    protected function sendHeader()
     {
         if (array_key_exists($this->status, self::HTTP_CODES)) {
             $header = self::HTTP_CODES[$this->status];
