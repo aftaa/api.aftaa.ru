@@ -13,7 +13,7 @@ use app\UriFileName;
 
 // все необработанные исключения будут обработаны JsonThrowableResponse
 set_exception_handler(function (Throwable $e) {
-    (new JsonThrowableResponse)->setException($e)->sent();
+    (new JsonThrowableResponse)->setException($e)->send();
 });
 
 
@@ -49,18 +49,18 @@ try {
         ->setStatus(200)
         ->setSuccess(true)
         ->setResponse($response)
-        ->sent();
+        ->send();
 
 } catch (Exception404 $e) {
     // 404 - ну тут все понятно
     (new JsonResponse)
         ->setStatus(404)
         ->setSuccess(false)
-        ->sent();
+        ->send();
 } catch (Exception $e) {
     // 401 - необходимо где-то там заполучить новый токен
     (new JsonResponse)
         ->setSuccess(false)
         ->setStatus(401)
-        ->sent();
+        ->send();
 }

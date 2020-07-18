@@ -17,7 +17,7 @@ class CorsPolicy
         $this->allowedSites = $allowedSites;
     }
 
-    public function sentHeaders()
+    public function sendHeaders()
     {
         $header = 'Access-Control-Allow-Origin';
         foreach ($this->allowedSites as $site) {

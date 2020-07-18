@@ -26,7 +26,7 @@ class AuthenticationService
 
         // CORS policy
         (new CorsPolicy($app->config->allowedSites))
-            ->sentHeaders();
+            ->sendHeaders();
     }
 
     /**

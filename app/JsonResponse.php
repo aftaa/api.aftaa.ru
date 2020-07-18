@@ -28,10 +28,10 @@ class JsonResponse
     }
 
     /**
-     * Sent the header and the JSON response.
+     * Send the header and the JSON response.
      * Exit the program.
      */
-    public function sent()
+    public function send()
     {
         $this->sentHeader();
 

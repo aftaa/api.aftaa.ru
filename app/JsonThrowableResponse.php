@@ -23,7 +23,7 @@ class JsonThrowableResponse extends JsonResponse
     /**
      * @inheritDoc
      */
-    public function sent()
+    public function send()
     {
         $this->setStatus(500)->sentHeader();
 
