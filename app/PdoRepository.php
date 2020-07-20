@@ -39,6 +39,11 @@ class PdoRepository extends PDO implements TokenMethodsInterface
     public function prolongToken(string $token): void
     {
         $stmt = $this->prepare('UPDATE token SET die = die + :prolong WHERE token=:token');
+        $stmt->execute([
+            'token' => $token,
+            'prolong' => self::PROLONG_TIME,
+        ]);
+
     }
 
 }

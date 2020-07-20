@@ -23,10 +23,6 @@ class AuthenticationService
     {
         $this->app = $app;
         $this->filename = $filename;
-
-        // CORS policy
-        (new CorsPolicy($app->config->allowedSites))
-            ->sendHeaders();
     }
 
     /**

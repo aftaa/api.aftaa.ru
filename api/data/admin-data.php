@@ -29,7 +29,7 @@ while ($row = $rows->fetchObject()) {
         'id'      => $row->link_id,
         'name'    => $row->link_name,
         'href'    => $row->href,
-        'icon'    => $row->icon,
+        'icon'    => 'http://api.aftaa.ru.local' . $row->icon,
         'private' => (bool)$row->link_private,
     ];
 }

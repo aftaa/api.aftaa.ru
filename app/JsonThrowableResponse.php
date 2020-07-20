@@ -25,7 +25,7 @@ class JsonThrowableResponse extends JsonResponse
      */
     public function send()
     {
-        $this->setStatus(500)->sendHeader();
+        $this->setStatus(200)->sendHeader();
 
         echo json_encode((object)[
             'success'   => false,
