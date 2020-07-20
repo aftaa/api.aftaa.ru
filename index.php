@@ -5,7 +5,6 @@
 
 use app\AuthenticationService;
 use app\CorsPolicy;
-use app\Exception404;
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
@@ -40,7 +39,7 @@ try {
     $filename = new UriFileName;
 
     $authenticationService = new AuthenticationService(
-        $app, $filename
+        $app, $filename,
     );
 
     if ($authenticationService->authenticate()) {
