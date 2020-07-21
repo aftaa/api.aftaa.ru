@@ -29,7 +29,10 @@ class UriFileName
      */
     private function selfCheck()
     {
-        if (!file_exists($this->filename) || is_dir($this->filename) || !is_readable($this->filename)) {
+        if (!file_exists($this->filename)
+            || is_dir($this->filename)
+            || !is_readable($this->filename)
+            || !filesize($this->filename)) {
             throw new Exception404("File $this->filename not found.");
         }
     }

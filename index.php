@@ -5,6 +5,8 @@
 
 use app\AuthenticationService;
 use app\CorsPolicy;
+use app\Exception401;
+use app\Exception404;
 use app\JsonResponse;
 use app\JsonThrowableResponse;
 use app\PdoRepository;
@@ -23,7 +25,7 @@ $app = (object)[
 ];
 
 
-// CORS policy
+// CORS policy (запускаем здесь, а не где-то там, чтобы все работало)
 (new CorsPolicy($app->config->allowedSites))->sendHeaders();
 
 
@@ -49,16 +51,21 @@ try {
     // результаты работы микросервиса закодируем в JSON
     // и отправим откуда спрашивали
     $response = include $filename->filename;
+    echo "<pre>"; print_r($response); echo "</pre>";die;
 
     (new JsonResponse)
         ->setStatus(200)
         ->setSuccess(true)
         ->setResponse($response)
         ->send();
-
-} catch (Exception $e) {
+} catch (Exception401|Exception404 $e) {
     (new JsonResponse)
         ->setSuccess(false)
         ->setStatus($e->getCode()) // Exception401 | Exception 404
+        ->send();
+
+} catch (Exception $e) {
+    (new JsonThrowableResponse)
+        ->setException($e)
         ->send();
 }
