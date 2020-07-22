@@ -51,7 +51,6 @@ try {
     // результаты работы микросервиса закодируем в JSON
     // и отправим откуда спрашивали
     $response = include $filename->filename;
-    echo "<pre>"; print_r($response); echo "</pre>";die;
 
     (new JsonResponse)
         ->setStatus(200)
