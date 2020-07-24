@@ -36,7 +36,7 @@ class VipAuthentication
 
         // несвезло или или свезло?! :)
         if (!$vip) {
-            throw new Exception('VIP auth failed.');
+            throw new Exception401('VIP auth failed.');
         }
     }
 
