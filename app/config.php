@@ -12,7 +12,7 @@ return (object)[
     ],
 
     'allowedSites' => [
-        'http://aftaa.ru.local',
+        'https://aftaa.ru',
     ],
 
     'pdo' => (object)[

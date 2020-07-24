@@ -18,7 +18,7 @@ while ($row = $rows->fetchObject()) {
         'id'   => $row->id,
         'name' => $row->link_name,
         'href' => $row->href,
-        'icon' => 'http://api.aftaa.ru.local' . $row->icon,
+        'icon' => 'https://api.aftaa.ru.local' . $row->icon,
     ];
     $data[$row->col_num][$row->block_name][] = $link;
 }

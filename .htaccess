@@ -1,5 +1,5 @@
-php_value auto_prepend_file /var/www/api.aftaa.ru.local/auto_prepend_file.php
-php_value auto_append_file /var/www/api.aftaa.ru.local/auto_append_file.php
+php_value auto_prepend_file /var/www/api.aftaa.ru/auto_prepend_file.php
+php_value auto_append_file /var/www/api.aftaa.ru/auto_append_file.php
 
 Options -Indexes
 
