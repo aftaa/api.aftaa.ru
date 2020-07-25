@@ -23,14 +23,6 @@ class CorsPolicy
         if (in_array($origin, $this->allowedSites)) {
             header("Access-Control-Allow-Origin: $origin");
         }
-
-//        $header = 'Access-Control-Allow-Origin';
-//        $allowedSites = implode(', ', $this->allowedSites);
-//        header("$header: $allowedSites");
-//        foreach ($this->allowedSites as $site) {
-//            header("$header: $site", false);
-//        }
-	
     }
 
     /**

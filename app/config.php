@@ -4,16 +4,16 @@ return (object)[
     'tokenName' => '_44f635f24e1bf9ee80e51287aad0a368+',
 
     'debug' => (object)[
-        'vipAuth' => true,
-        'tokenAuth' => false,
+        'vipAuth'      => true,
+        'tokenAuth'    => false,
         'useTestToken' => false,
-        'testToken' => '',
-        'userAuth' => false,
+        'testToken'    => '',
+        'userAuth'     => false,
     ],
 
     'allowedSites' => [
         'https://aftaa.ru',
-	'http://aftaa.ru.local',
+        'http://aftaa.ru.local',
     ],
 
     'pdo' => (object)[
