@@ -19,6 +19,9 @@ class CorsPolicy
 
     public function sendHeaders()
     {
+        if (empty($_SERVER['HTTP_ORIGIN'])) {
+            return;
+        }
         $origin = $_SERVER['HTTP_ORIGIN'];
         if (in_array($origin, $this->allowedSites)) {
             header("Access-Control-Allow-Origin: $origin");

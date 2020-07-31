@@ -19,7 +19,7 @@ $stmt->execute([
     'name'     => $_POST['name'],
     'href'     => $_POST['href'],
     'icon'     => $_POST['icon'],
-    'private'  => (bool)$_POST['private'],
+    'private'  => $_POST['private'],
     'id'       => $_POST['id'],
 ]);
 

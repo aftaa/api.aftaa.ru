@@ -25,7 +25,7 @@ $app = (object)[
 ];
 
 
-// CORS policy (запускаем здесь, а не где-то там, чтобы все работало)
+// CORS policy (запускаем здесь, а не где-то там, чтобы все работало :)
 (new CorsPolicy($app->config->allowedSites))->sendHeaders();
 
 
