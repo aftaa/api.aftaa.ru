@@ -2,7 +2,7 @@
 
 $sql = 'SELECT l.id AS link_id, b.id AS block_id, l.name AS link_name, b.name AS block_name, '
     . 'col_num, href, icon, b.private AS block_private, l.private AS link_private '
-    . 'FROM link l JOIN link_block b ON l.block_id=b.id '
+    . 'FROM link l RIGHT JOIN link_block b ON l.block_id=b.id '
     . 'WHERE b.deleted = FALSE AND l.deleted = FALSE '
     . 'ORDER BY b.sort, l.name';
 
