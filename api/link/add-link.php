@@ -1,5 +1,4 @@
 <?php
-
 /** @var object $app */
 
 $sql = "insert into link set
@@ -20,4 +19,4 @@ $stmt->execute([
     'private'  => $_POST['private'],
 ]);
 
-return $stmt->rowCount();
+return $app->pdo->lastInsertId();
